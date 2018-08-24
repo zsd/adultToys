@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.authority.dao.mapper.AuthorityMapper">
+
+    <resultMap id="authorityMap" type="com.zsd.authority.domain.Authority">
+        <result column="id"           property="id" /> <!-- 权限ID -->
+        <result column="label"        property="label" /> <!-- 权限标志 -->
+        <result column="name"         property="name" /> <!-- 权限名称 -->
+        <result column="description"  property="description" /> <!-- 权限描述 -->
+        <result column="create_time"  property="createTime" /> <!-- 创建时间 -->
+
+        <result column="update_time"  property="updateTime" /> <!-- 更新时间 -->
+    </resultMap>
+
+    <sql id="table-name">plat_authority</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        id,          label,  name,  description,  create_time,
+        update_time
+    </sql>
+
+    <!-- 根据角色ID获取权限列表 -->
+    <select id="getByRoleId" resultMap="authorityMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id in (
+          select authority_id from plat_role_authority
+          where role_id = #{roleId}
+        )
+    </select>
+
+    <!-- 根据岗位ID获取权限列表 -->
+    <select id="getByPostId" resultMap="authorityMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id in (
+          select authority_id from plat_role_authority
+          where role_id in (
+            select role_id from plat_org_role where org_id = #{postId}
+          )
+        )
+    </select>
+
+    <!-- 保存权限 -->
+    <insert id="save">
+        insert into <include refid="table-name"/>
+        (
+          <include refid="sqlPart"/>
+        )
+        values
+        (
+          #{id,           jdbcType=NUMERIC  },
+          #{label,        jdbcType=VARCHAR  },
+          #{name,         jdbcType=VARCHAR  },
+          #{description,  jdbcType=VARCHAR  },
+          now(),
+
+          now()
+        )
+    </insert>
+
+</mapper>

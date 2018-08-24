@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.org.dao.mapper.PostMapper">
+
+    <resultMap id="postMap" type="com.zsd.org.domain.Post">
+        <result column="id"           property="id" /> <!-- 岗位ID -->
+        <result column="name"         property="name" /> <!-- 岗位名称 -->
+        <result column="create_time"  property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time"  property="updateTime" /> <!-- 更新时间 -->
+
+        <association property="parent"  resultMap="parentMap" /> <!-- 归属部门 -->
+        <association property="user"  resultMap="userMap" /> <!-- 关联用户 -->
+    </resultMap>
+
+    <!-- 单位 -->
+    <resultMap id="parentMap" type="com.zsd.org.domain.Department">
+        <result column="department_id"  property="id"/>
+    </resultMap>
+    <!-- 单位 -->
+    <resultMap id="userMap" type="com.zsd.org.domain.User">
+        <result column="user_id"    property="id"/>
+        <result column="user_name"  property="name"/>
+    </resultMap>
+
+    <sql id="table-name">plat_post</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        p.id,          p.name,  p.user_id,  p.department_id,  p.create_time,
+        p.update_time, u.name as user_name
+    </sql>
+
+    <sql id="if-part">
+        <where>
+            <if test="name != null">
+                and (p.name LIKE '%${name}%' or u.name LIKE '%${name}%')
+            </if>
+            <if test="departmentId != null">
+                and p.department_id = #{departmentId}
+            </if>
+        </where>
+    </sql>
+
+    <!--根据岗位ID获取岗位-->
+    <select id="getById" parameterType="String" resultMap="postMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/> p
+        left join plat_user u on p.user_id = u.id
+        where p.id = #{id}
+    </select>
+
+    <!--根据用户ID获取岗位列表-->
+    <select id="getByUserId" parameterType="String" resultMap="postMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/> p
+        left join plat_user u on p.user_id = u.id
+        where p.user_id = #{userId}
+    </select>
+
+    <!--保存岗位-->
+    <insert id="save" parameterType="com.zsd.org.domain.Post">
+        insert into <include refid="table-name"/>
+        (id,    name,  user_id,  department_id,  create_time,  update_time)
+        values (#{id}, #{name}, #{user.id}, #{parent.id}, now(), now())
+    </insert>
+
+    <!--更新岗位-->
+    <update id="update" parameterType="com.zsd.org.domain.Post">
+        update <include refid="table-name"/>
+        set
+        name = #{name},
+        user_id = #{user.id},
+        department_id = #{parent.id},
+        update_time = now()
+        where id = #{id}
+    </update>
+
+    <!--删除岗位-->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/> where id = #{id}
+    </delete>
+
+    <!-- 查询单位, 查询记录数 -->
+    <select id="count" resultType="long">
+        select count(p.id)
+        from <include refid="table-name"/> p
+        left join plat_user u on p.user_id = u.id
+        <include refid="if-part"/>
+    </select>
+
+    <!-- 查询单位, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" resultMap="postMap">
+        select <include refid="sqlPart"/>
+        from <include refid="table-name"/> p
+        left join plat_user u on p.user_id = u.id
+        <include refid="if-part"/>
+        ORDER BY p.update_time DESC
+        LIMIT #{skip,     jdbcType=NUMERIC  }, #{limit,     jdbcType=NUMERIC  }
+    </select>
+
+    <select id="getByName" parameterType="String" resultMap="postMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/> p
+        where p.name = #{name}
+    </select>
+
+</mapper>

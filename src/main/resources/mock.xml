@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mock>
+    <unit name="测试单位">
+        <post id="123"
+              name="测试岗位"
+              account="test"
+              username="测试用户"
+              department="测试部门" />
+    </unit>
+</mock>

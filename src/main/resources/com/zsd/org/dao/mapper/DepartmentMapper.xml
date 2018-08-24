@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.org.dao.mapper.DepartmentMapper">
+
+    <resultMap id="departmentMap" type="com.zsd.org.domain.Department">
+        <result column="id"           property="id" /> <!-- 唯一ID -->
+        <result column="name"         property="name" /> <!-- 名称 -->
+        <result column="create_time"  property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time"  property="updateTime" /> <!-- 更新时间 -->
+
+        <association property="parent"  resultMap="parentMap" />
+    </resultMap>
+
+    <!-- 单位 -->
+    <resultMap id="parentMap" type="com.zsd.org.domain.Org">
+        <result column="org_id"  property="id"/>
+    </resultMap>
+
+    <sql id="table-name">plat_department</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        id,  name,  org_id,  create_time,  update_time
+    </sql>
+
+    <!--根据单位ID获取单位-->
+    <select id="getById" parameterType="String" resultMap="departmentMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!--保存单位-->
+    <insert id="save" parameterType="com.zsd.org.domain.Department">
+        insert into <include refid="table-name"/>
+        (<include refid="sqlPart"/>)
+        values (#{id}, #{name}, #{parent.id}, now(), now())
+    </insert>
+
+    <!--更新单位-->
+    <update id="update" parameterType="com.zsd.org.domain.Department">
+        update <include refid="table-name"/>
+        set
+        name = #{name},
+        org_id = #{parent.id}
+        where id = #{id}
+    </update>
+
+    <!--删除单位-->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/> where id = #{id}
+    </delete>
+
+    <!-- 查询部门, 查询记录数 -->
+    <select id="count" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+            <if test="orgId != null">
+                and org_id = #{orgId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询部门, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" resultMap="departmentMap">
+        select <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+            <if test="orgId != null">
+                and org_id = #{orgId}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+        LIMIT #{skip,     jdbcType=NUMERIC  }, #{limit,     jdbcType=NUMERIC  }
+    </select>
+
+    <select id="getByParentId" resultMap="departmentMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where org_id = #{parentId}
+    </select>
+
+</mapper>

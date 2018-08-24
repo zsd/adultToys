@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.org.dao.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.zsd.org.domain.User">
+        <result column="id"           property="id" /> <!-- 用户ID -->
+        <result column="name"         property="name" /> <!-- 用户名称 -->
+        <result column="login_name"   property="loginName" /> <!-- 登录名称 -->
+        <result column="password"     property="password" /> <!-- 密码 -->
+        <result column="phone"        property="phone" /> <!-- 电话号码 -->
+        <result column="birthday"        property="birthday" /> <!-- 出生日期 -->
+        <result column="email"        property="email" /> <!-- 邮箱 -->
+
+        <result column="create_time"  property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time"  property="updateTime" /> <!-- 更新时间 -->
+
+    </resultMap>
+
+    <sql id="table-name">plat_user</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        id,           name,     login_name,   password,     phone,
+        birthday,     email,    create_time,  update_time
+    </sql>
+
+    <!-- 根据用户ID获取用户 -->
+    <select id="getById" parameterType="String" resultMap="userMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!-- 根据用户ID获取用户 -->
+    <select id="getByLoginName" parameterType="String" resultMap="userMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where login_name = #{loginName}
+    </select>
+
+    <!-- 根据岗位ID获取用户 -->
+    <select id="getByPostId" parameterType="String" resultMap="userMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id in (select user_id
+        from plat_post
+        where id = #{postId})
+    </select>
+
+    <!--保存用户-->
+    <insert id="save" parameterType="com.zsd.org.domain.User">
+        insert into <include refid="table-name"/>
+        (<include refid="sqlPart"/>)
+        values (#{id}, #{name}, #{loginName}, #{password}, #{phone}, #{birthday},     #{email}, now(), now())
+    </insert>
+
+    <!--更新用户-->
+    <update id="update" parameterType="com.zsd.org.domain.User">
+        update <include refid="table-name"/>
+        set
+        name = #{name},
+        login_name = #{loginName},
+        password = #{password},
+        phone = #{phone},
+        birthday = #{birthday},
+        email = #{email}
+        where id = #{id}
+    </update>
+
+    <!--删除用户-->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/> where id = #{id}
+    </delete>
+
+    <!-- 查询, 查询记录数 -->
+    <select id="count" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" resultMap="userMap">
+        select <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+        </where>
+        ORDER BY update_time DESC
+        LIMIT #{skip,     jdbcType=NUMERIC  }, #{limit,     jdbcType=NUMERIC  }
+    </select>
+
+    <!-- 验证用户名 -->
+    <select id="checkLoginName" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="id != null">
+                and id != #{id}
+            </if>
+            <if test="loginName != null">
+                and login_name = #{loginName}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByDepartmentId" resultMap="userMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id in (select user_id
+        from plat_post
+        where department_id = #{departmentId})
+    </select>
+
+    <select id="getAllUser" resultType="hashmap">
+        select a.name as ogrName,b.name as departmentName,c.name as postName,d.* from plat_user d left join plat_post c on c.user_id = d.id left join plat_department b on b.id=c.department_id left join plat_org a on a.id=b.org_id        <where>
+        <if test="name != null">
+            and d.name LIKE '%${name}%'
+        </if>
+        <if test="departmentId != null">
+            and b.id=#{departmentId}
+        </if>
+    </where>
+        order by a.name,b.name,c.name
+    </select>
+</mapper>

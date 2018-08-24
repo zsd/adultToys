@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="org.springframework.stereotype.Repository" />
+    </list>
+  </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/../agcom_new/classes/artifacts/agcom_new_Web_exploded/analysis/fcda/WEB-INF/web.xml" />
+    <file type="web" url="file://$PROJECT_DIR$/../agcom_new/classes/artifacts/agcom_new_Web_exploded/WEB-INF/web.xml" />
+    <file type="web" url="file://$PROJECT_DIR$/../agcom_new/WebRoot/analysis/fcda/WEB-INF/web.xml" />
+    <file type="web" url="file://$PROJECT_DIR$/../agcom_new_hk/WebRoot/analysis/fcda/WEB-INF/web.xml" />
+  </component>
+  <component name="IdProvider" IDEtalkID="23ADD6596BA1D3BC647A2F2B31CB6792" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/classes" />
+  </component>
+  <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="mySupportsUserInfoFilter" value="true" />
+  </component>
+</project>

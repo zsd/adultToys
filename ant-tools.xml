@@ -1,0 +1,59 @@
+﻿<?xml version="1.0"?>
+<project name="ant-tools">
+
+    <property name="project.name" value="platform"/><!--项目名称-->
+
+    <dirname property="module.dir" file="${ant.file}"/>
+    <dirname property="module.java.dir" file="${module.dir}\src\main\java\com"/>
+    <dirname property="module.resources.dir" file="${module.dir}\src\main\resources\com"/>
+
+    <property name="build.root.dir" value="E:\war\${project.name}"/><!--最终生成保存路径-->
+    <property name="build.target.dir" value="${build.root.dir}\target"/><!--war包所在路径-->
+    <property name="build.war.dir" value="${build.target.dir}\${project.name}.war"/><!--war包-->
+
+    <tstamp>
+        <format property="timestamp" pattern="yyyyMMddhhmmsss" locale="cn"/>
+    </tstamp>
+
+    <target name="copy-mapping">
+
+        <echo message="复制 MyBatis Mapper 文件, 从 ${module.java.dir}"/>
+        <copy overwrite="true" todir="${module.resources.dir}">
+            <fileset dir="${module.java.dir}">
+                <include name="**\*Mapper.xml"/>
+            </fileset>
+        </copy>
+
+        <echo message="复制 Message 文件, 从 ${module.java.dir}"/>
+        <copy overwrite="true" todir="${module.resources.dir}">
+            <fileset dir="${module.java.dir}">
+                <include name="**\*Module*.properties"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="package-war">
+        <echo message="打包项目"/>
+
+        <copy overwrite="true" todir="${build.root.dir}\bak\${timestamp}">
+            <fileset file="${build.war.dir}"/>
+        </copy>
+
+        <delete dir="${build.target.dir}"/>
+
+        <!--将编译后的文件放到生成目录中-->
+        <copydir src="${module.dir}\classes\artifacts\${project.name}_war_exploded" dest="${build.target.dir}\${project.name}"/>
+
+        <!--<copy overwrite="true" todir="${build.target.dir}\${project.name}\WEB-INF">-->
+            <!--<fileset file="${module.dir}\src\main\resources\deploy\web.xml"/>-->
+        <!--</copy>-->
+
+        <copy overwrite="true" todir="${build.target.dir}\${project.name}\WEB-INF\classes">
+            <fileset file="${module.dir}\src\main\resources\deploy\**.properties"/>
+        </copy>
+
+        <war warfile="${build.war.dir}" basedir="${build.target.dir}\${project.name}" webxml="${build.target.dir}\${project.name}\WEB-INF\web.xml"/>
+
+    </target>
+
+</project>

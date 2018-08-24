@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.authority.dao.mapper.RoleFunctionMapper">
+
+    <resultMap id="roleFunctionMap" type="com.zsd.authority.domain.RoleFunction">
+        <result column="role_id"          property="roleId" /> <!-- 角色ID -->
+        <result column="function_id"      property="functionId" /> <!-- 权限ID -->
+    </resultMap>
+
+    <sql id="table-name">plat_role_function</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        role_id,  function_id
+    </sql>
+
+    <!-- 根据角色ID获取权限列表 -->
+    <select id="getByRoleId" resultMap="roleFunctionMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where role_id = #{roleId}
+    </select>
+
+    <!-- 保存权限 -->
+    <insert id="save">
+        insert into <include refid="table-name"/>
+        (
+        <include refid="sqlPart"/>
+        )
+        values
+        (
+        #{roleId,           jdbcType=VARCHAR},
+        #{functionId,         jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!--删除关联-->
+    <delete id="delete">
+        delete from <include refid="table-name"/>
+        where role_id = #{roleId}
+        AND function_id = #{functionId}
+    </delete>
+
+    <delete id="deleteByRoleId">
+        delete from <include refid="table-name"/>
+        where role_id = #{roleId}
+    </delete>
+</mapper>

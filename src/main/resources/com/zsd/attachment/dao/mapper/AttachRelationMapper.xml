@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsd.attachment.dao.mapper.AttachRelationMapper">
+
+    <resultMap id="attachRelationMap" type="com.zsd.attachment.domain.AttachRelation">
+        <result column="id"             property="id"/>
+        <result column="attach_id"      property="attachment.id"/>
+        <result column="object_type"    property="objectType"/>
+        <result column="object_id"      property="objectId"/>
+    </resultMap>
+
+    <sql id="sqlPart">
+        id,    attach_id,    object_type,     object_id
+    </sql>
+
+    <!--插入附件关联-->
+    <insert id="insert" >
+         insert into plat_attach_relation
+         (
+            id,    attach_id,    object_type,     object_id
+         )
+        values (
+            #{id,                   jdbcType=VARCHAR  },
+            #{attachment.id,        jdbcType=VARCHAR  },
+            #{objectType,           jdbcType=NUMERIC  },
+            #{objectId,             jdbcType=VARCHAR  }
+        )
+    </insert>
+
+    <!--根据附件ID获取附件与业务关联-->
+    <select id="getByAttachId" resultMap="attachRelationMap">
+        select <include refid="sqlPart"/>
+        from plat_attach_relation
+        where attach_id = #{attachId,        jdbcType=VARCHAR  }
+    </select>
+
+    <!--根据附件ID删除附件与业务关联-->
+    <delete id="deleteByAttachId">
+        delete from plat_attach_relation where attach_id = #{attachId,        jdbcType=VARCHAR  }
+    </delete>
+</mapper>

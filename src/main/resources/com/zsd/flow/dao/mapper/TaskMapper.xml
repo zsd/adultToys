@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.flow.dao.mapper.TaskMapper">
+
+    <resultMap id="taskMap" type="com.zsd.flow.domain.Task">
+
+        <result column="ID"                  property="id" />
+        <result column="ACTIVITY_ID"         property="activity.id" />
+        <result column="OBJECT_ID"           property="taskObject.id" />
+        <result column="OBJECT_NAME"         property="taskObject.name" />
+        <result column="OBJECT_TYPE_ID"      property="taskObject.objType.id" />
+
+        <result column="OBJECT_TYPE_NAME"    property="taskObject.objType.name" />
+        <result column="STATUS_ID"           property="taskObject.status.id" />
+        <result column="STATUS_NAME"         property="taskObject.status.name" />
+        <result column="IS_DO"               property="isDo" />
+        <result column="IS_READED"           property="isReaded" />
+
+        <result column="CREATE_TIME"         property="createTime" />
+        <result column="UPDATE_TIME"         property="updateTime" />
+
+        <!-- 转换Handler为具体形别 -->
+        <association property="handler" javaType="int">
+            <discriminator javaType="int" column="HANDLER_TYPE">
+                <case value="3" resultMap="postMap"/>
+                <case value="2" resultMap="departmentMap"/>
+                <case value="1" resultMap="orgMap"/>
+            </discriminator>
+        </association>
+
+    </resultMap>
+
+    <!-- 岗位 -->
+    <resultMap id="postMap" type="com.zsd.org.domain.Post">
+        <result column="HANDLER_ID"    property="id" />
+        <result column="HANDLER_NAME"  property="name" />
+    </resultMap>
+
+    <!-- 部门 -->
+    <resultMap id="departmentMap" type="com.zsd.org.domain.Department">
+        <result column="HANDLER_ID"    property="id" />
+        <result column="HANDLER_NAME"  property="name" />
+    </resultMap>
+
+    <!-- 单位 -->
+    <resultMap id="orgMap" type="com.zsd.org.domain.Org">
+        <result column="HANDLER_ID"      property="id" />
+        <result column="HANDLER_NAME"    property="name" />
+    </resultMap>
+
+    <sql id="table-name">plat_task</sql>
+
+    <!--sql片段-->
+    <sql id="sqlPart">
+        ID,          ACTIVITY_ID,    HANDLER_ID,       HANDLER_NAME,  HANDLER_TYPE,
+        OBJECT_ID,   OBJECT_TYPE_ID, OBJECT_TYPE_NAME, STATUS_ID,     STATUS_NAME,
+        IS_READED,   IS_DO,          CREATE_TIME,      UPDATE_TIME
+    </sql>
+
+    <!--插入任务,处理人为岗位-->
+    <insert id="insert" parameterType="com.zsd.flow.domain.Task">
+        insert into <include refid="table-name"/>
+            (<include refid="sqlPart"/>)
+        values
+          (
+            #{id,                        jdbcType=VARCHAR  },
+            #{activity.id,               jdbcType=VARCHAR  },
+            #{handler.id,                jdbcType=VARCHAR  },
+            #{handler.name,              jdbcType=VARCHAR  },
+            #{handler.type,              jdbcType=VARCHAR  },
+
+            #{taskObject.id,             jdbcType=VARCHAR  },
+            #{taskObject.objType.id,     jdbcType=VARCHAR  },
+            #{taskObject.objType.name,   jdbcType=VARCHAR  },
+            #{taskObject.status.id,      jdbcType=VARCHAR  },
+            #{taskObject.status.name,    jdbcType=VARCHAR  },
+
+            #{isReaded,                  jdbcType=VARCHAR  },
+            #{isDo,                      jdbcType=VARCHAR  },
+            now(),
+            now()
+          )
+    </insert>
+
+    <!--更新任务-->
+    <update id="update" parameterType="com.zsd.flow.domain.Task">
+        update <include refid="table-name"/>
+            set
+                ACTIVITY_ID  = #{activity.id,             jdbcType=VARCHAR  },
+                HANDLER_ID   = #{handler.id,              jdbcType=VARCHAR  },
+                HANDLER_NAME = #{handler.name,            jdbcType=VARCHAR  },
+                HANDLER_TYPE = #{handler.type,            jdbcType=VARCHAR  },
+                STATUS_ID    = #{taskObject.status.id,    jdbcType=VARCHAR  },
+                STATUS_NAME  = #{taskObject.status.name,  jdbcType=VARCHAR  },
+                IS_DO        = #{isDo,                    jdbcType=VARCHAR  },
+                IS_READED    = #{isReaded,                jdbcType=VARCHAR  },
+                UPDATE_TIME  = now()
+            where ID = #{id}
+    </update>
+
+    <!-- 标记为已读未读 -->
+    <update id="read">
+		update <include refid="table-name"/>
+		set
+			IS_READED   = #{isReaded, jdbcType=VARCHAR},
+            UPDATE_TIME = now()
+		where ID = #{id}
+	</update>
+
+    <!-- 根据任务ID获取任务列表 -->
+    <select id="getById" parameterType="string" resultMap="taskMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where ID = #{id}
+    </select>
+
+    <!-- 删除任务 -->
+    <delete id="delete" parameterType="string">
+		delete from <include refid="table-name"/> where ID = #{id}
+	</delete>
+
+    <select id="search" resultMap="taskMap">
+        select * from (
+          select row_.*,rownum rownum_ from (
+            select <include refid="sqlPart"/> from <include refid="table-name"/>
+              where object_type = #{objectType}
+        ) row_
+        where rownum &lt;= #{limit})
+        where rownum_ &gt; #{skip}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(id) from <include refid="table-name"/>
+        where object_type = #{objectType}
+    </select>
+
+    <select id="getByObjectId" resultMap="taskMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where object_id = #{objectId}
+        order by update_time desc
+    </select>
+
+    <!--&lt;!&ndash;根据对象ID获取该对象关联的最新任务&ndash;&gt;-->
+    <!--<select id="getLastTaskByObjectId" resultMap="taskMap">-->
+        <!--select <include refid="sqlPart"/> from ssim_flow f-->
+        <!--left join ssim_task t on f.current_task_id = t.id-->
+        <!--where t.object_id = #{objectId}-->
+    <!--</select>-->
+
+    <!--根据活动ID，获取活动生成的任务-->
+    <select id="getByActivityId" resultMap="taskMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where activity_id = #{activityId}
+    </select>
+</mapper>

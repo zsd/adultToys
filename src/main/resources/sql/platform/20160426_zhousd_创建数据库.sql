@@ -1,0 +1,1 @@
+CREATE DATABASE IF NOT EXISTS hnoc COLLATE  utf8mb4_unicode_ci;

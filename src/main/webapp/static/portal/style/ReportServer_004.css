@@ -1,0 +1,184 @@
+﻿/**
+ * wei : 浅蓝色风格的树控件，目前主要实现了手风琴式树的浅蓝色样式
+ */
+.fs_tree div.fr-tree-node-el-accordion-root {
+	background : url('images/lightblue.png') 0px -96px repeat-x;
+	height : 27px;
+	cursor : pointer;
+    margin-bottom : 4px;
+}
+
+.fs_tree div.fr-tree-node-el {
+	margin-left : 3px;
+	margin-right : 3px;
+}
+
+.fr-tree-node-el-accordion-root .fs-tree-node-content {
+	line-height : 27px;
+}
+
+.fr-tree-elbow-plus-fsdt {
+	background : url('images/closetreenode.png') no-repeat center;
+}
+
+.fr-tree-elbow-plus-accordion, .fr-tree-elbow-end-plus-accordion, .fr-tree-elbow-minus-accordion, .fr-tree-elbow, .fr-tree-elbow-end, .fr-tree-elbow-end-minus-accordion{
+	width : 16px;
+	height : 16px;
+	margin-left : 0px;
+	margin-top : 5px;
+}
+.fr-tree-elbow-plus-accordion, .fr-tree-elbow-end-plus-accordion, .fr-tree-elbow-minus-accordion, .fr-tree-elbow-end-minus-accordion {
+	float : left;
+    background : url('images/lightblue.png') 0px 0px no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') 0px -128px no-repeat;
+}
+
+.fr-tree-node .fr-tree-node-el-accordion span.fr-tree-node-indent {
+	float : left;	
+}
+
+.fs_tree div.fr-tree-node-accordion-over {
+	background : #CCEAF8;
+}
+
+.fs_tree div.fr-tree-node-accordion-over-root {
+	background : url('images/lightblue.png') 0px -160px repeat-x;
+}
+
+.fs_tree div.fr-tree-accordion-selected {
+	background : url('images/lightblue.png') 0px -224px repeat-x;
+}
+
+.fr-tree-node .fr-tree-node-el-accordion-root span {
+	font-size : 14px;
+	font-family : 'Microsoft YaHei',SimSun,arial;
+    font-weight: bold;
+}
+
+.fr-tree-node-textwrap {
+	height : 27px;
+	cursor : pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+}
+
+.fr-tree-node-el-accordion-root .fr-tree-node-textwrap{
+    color : #333333;
+}
+
+.fr-tree-node-el-accordion .fr-tree-node-textwrap {
+    color : #2190A9;
+}
+
+.fs_tree div.fr-tree-node-el-accordion {
+	height : 28px;
+}
+
+.fr-tree-node-el-accordion .fr-tree-elbow-plus-accordion, .fr-tree-node-el-accordion .fr-tree-elbow-end-plus-accordion {
+	background : url('images/lightblue.png') -16px 0px no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') -16px -128px no-repeat;
+}
+
+.fr-tree-node-el-accordion .fr-tree-elbow-minus-accordion, .fr-tree-node-el-accordion .fr-tree-elbow-end-minus-accordion {
+	background : url('images/lightblue.png') -16px -32px no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') -16px -160px no-repeat;
+}
+
+.fr-tree-node .fr-tree-node-el-accordion span {
+	font-size : 14px;
+	font-family : "Microsoft YaHei",SimSun,arial;
+}
+
+.fs-tree-node-even .fr-tree-node-el-accordion {
+	background:#F6F6F6;
+}
+
+.fs-tree-node-odd .fr-tree-node-el-accordion {
+	background:#FFFFFF;
+}
+
+.fr-tree-node .fr-tree-node-el-accordion span.fs-tree-node-content {
+	line-height : 28px;
+}
+
+.fs-tree-node-el-odd {
+	background : #FFFFFF;
+    border : 1px solid #FFFFFF;
+}
+
+.fs-tree-node-el-even {
+	background : #F3F6F9;
+	border : 1px solid #F2F2F2;
+}
+
+.fr-tree-emptyimg {
+	height:27px;
+	float:left;
+}
+
+.fs_tree div.fr-tree-node-el-accordion-selected-leaf {
+	background : #B2E795;
+	border-left : 1px solid #B2E795;
+	border-right : 1px solid #B2E795;
+	border-radius : 2px;
+	-webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+}
+
+.fr-tree-node-left {
+	height:28px;
+	width:7px;
+	float:left;
+}
+
+.fr-tree-node-el-accordion-root .fr-tree-node-left {
+	background : url('images/lightblue.png') 0px -64px no-repeat;
+}
+
+.fr-tree-node-right {
+	height:28px;
+	width:7px;
+	float:right;
+}
+
+.fr-tree-node-el-accordion-root .fr-tree-node-right {
+	background : url('images/lightblue.png') -16px -64px no-repeat;
+}
+
+.fs_tree div.fr-tree-node-accordion-over-root .fr-tree-node-left {
+	background : url('images/lightblue.png') 0px -128px no-repeat;
+}
+
+.fs_tree div.fr-tree-node-accordion-over-root .fr-tree-node-right {
+	background : url('images/lightblue.png') -16px -128px no-repeat;
+}
+
+.fs_tree div.fr-tree-accordion-selected .fr-tree-node-left {
+	background : url('images/lightblue.png') 0px -192px no-repeat;
+}
+
+.fs_tree div.fr-tree-accordion-selected .fr-tree-node-right {
+	background : url('images/lightblue.png') -16px -192px no-repeat;
+}
+
+.fr-tree-leaf-cpticon {
+    background : url('images/lightblue.png') -32px 0 no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') -32px -128px no-repeat;
+}
+
+.fr-tree-leaf-frmicon {
+    background : url('images/lightblue.png') -304px 0 no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') -144px -128px no-repeat;
+}
+
+.fr-tree-leaf-urlicon {
+    background : url('lightblue.png') -320px 0 no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') -160px -128px no-repeat;
+}
+
+.fr-tree-leaf-processicon, .fr-tree-leaf-biicon, .fr-tree-leaf-defaulticon {
+    background : url('images/lightblue.png') -336px 0 no-repeat;
+    _background : url('images/fs_tab_and_tree.gif') -176px -128px no-repeat;
+}

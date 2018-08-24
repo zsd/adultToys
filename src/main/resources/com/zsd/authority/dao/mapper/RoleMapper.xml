@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.authority.dao.mapper.RoleMapper">
+
+    <resultMap id="roleMap" type="com.zsd.authority.domain.Role">
+        <result column="id"          property="id" /> <!-- 角色唯一ID -->
+        <result column="name"        property="name" /> <!-- 角色名称 -->
+        <result column="description" property="description" /> <!-- 角色描述 -->
+        <result column="create_time" property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time" property="updateTime" /> <!-- 更新时间 -->
+    </resultMap>
+
+    <sql id="table-name">plat_role</sql>
+
+    <sql id="table-org-role-name">plat_user_role</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        id,  name,  description,  create_time,  update_time
+    </sql>
+
+    <!-- 根据岗位ID获取角色列表 -->
+    <select id="getByUserId" parameterType="long" resultMap="roleMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id in (
+          select role_id from <include refid="table-org-role-name"/>
+          where user_id = #{userId}
+        )
+    </select>
+
+    <!-- 保存角色 -->
+    <insert id="save">
+        insert into <include refid="table-name"/>
+        (
+        <include refid="sqlPart"/>
+        )
+        values
+        (
+        #{id,           jdbcType=VARCHAR},
+        #{name,         jdbcType=VARCHAR},
+        #{description,  jdbcType=VARCHAR},
+        now(),
+        now()
+        )
+    </insert>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.zsd.authority.domain.Role">
+        update <include refid="table-name"/>
+        set
+        name = #{name},
+        description = #{description},
+        update_time = now()
+        where id = #{id}
+    </update>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/> where id = #{id}
+    </delete>
+
+    <!-- 查询, 查询记录数 -->
+    <select id="count" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" resultMap="roleMap">
+        select <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+        </where>
+        ORDER BY update_time DESC
+        LIMIT #{skip,     jdbcType=NUMERIC  }, #{limit,     jdbcType=NUMERIC  }
+    </select>
+
+    <insert id="saveUserRole">
+        insert into <include refid="table-org-role-name"/>
+        (
+            org_id,  role_id,  create_time,  update_time
+        )
+        values
+        (
+            #{userId},
+            #{roleId},
+            now(),
+            now()
+        )
+    </insert>
+
+    <delete id="deleteByUserId">
+        delete from <include refid="table-org-role-name"/> where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteByRole">
+        delete from <include refid="table-org-role-name"/> where role_id = #{roleId}
+    </delete>
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.flow.dao.mapper.FlowMapper">
+    <resultMap id="flowMap" type="com.zsd.flow.domain.Flow">
+        <result column="ID"                     property="id" />
+        <result column="START_ACTIVITY_ID"      property="startActivity.id" />
+        <result column="CURRENT_ACTIVITY_ID"    property="currentTask.activity.id" />
+        <result column="CURRENT_TASK_ID"        property="currentTask.id" />
+        <result column="CREATE_TIME"            property="createTime" />
+
+        <result column="UPDATE_TIME"            property="updateTime" />
+    </resultMap>
+
+    <sql id="table-name">plat_flow</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+		ID,                 START_ACTIVITY_ID,  CURRENT_ACTIVITY_ID,  CURRENT_TASK_ID,  CURRENT_USER_ID,
+    	CURRENT_USER_NAME,  CURRENT_POST_ID,    CURRENT_POST_NAME,    CURRENT_DEP_ID,   CURRENT_DEP_NAME,
+    	CURRENT_ORG_ID,     CURRENT_ORG_NAME,   CREATE_TIME,          UPDATE_TIME
+	</sql>
+
+    <!--插入流程-->
+    <insert id="save" parameterType="com.zsd.flow.domain.Flow">
+        insert into <include refid="table-name"/>(
+          <include refid="sqlPart"/>
+        )
+        values
+           (
+            #{id,                                        jdbcType=VARCHAR  },
+            #{startActivity.id,                          jdbcType=VARCHAR  },
+            #{currentTask.activity.id,                   jdbcType=VARCHAR  },
+            #{currentTask.id,                            jdbcType=VARCHAR  },
+            #{currentTask.handler.user.id,               jdbcType=VARCHAR  },
+
+            #{currentTask.handler.user.name,             jdbcType=VARCHAR  },
+            #{currentTask.handler.id,                    jdbcType=VARCHAR  },
+            #{currentTask.handler.name,                  jdbcType=VARCHAR  },
+            #{currentTask.handler.parent.id,             jdbcType=VARCHAR  },
+            #{currentTask.handler.parent.name,           jdbcType=VARCHAR  },
+
+            #{currentTask.handler.parent.parent.id,      jdbcType=VARCHAR  },
+            #{currentTask.handler.parent.parent.name,    jdbcType=VARCHAR  },
+            now(),
+            now()
+           )
+    </insert>
+
+    <!--更新流程-->
+    <update id="update" parameterType="com.zsd.flow.domain.Flow">
+        update <include refid="table-name"/>
+          set
+            CURRENT_ACTIVITY_ID  = #{currentTask.activity.id,                 jdbcType=VARCHAR  },
+            CURRENT_TASK_ID      = #{currentTask.id,                          jdbcType=VARCHAR  },
+            CURRENT_USER_ID      = #{currentTask.handler.user.id,             jdbcType=VARCHAR  },
+            CURRENT_USER_NAME    = #{currentTask.handler.user.name,           jdbcType=VARCHAR  },
+            CURRENT_POST_ID      = #{currentTask.handler.id,                  jdbcType=VARCHAR  },
+
+            CURRENT_POST_NAME    = #{currentTask.handler.name,                jdbcType=VARCHAR  },
+            CURRENT_DEP_ID       = #{currentTask.handler.parent.id,           jdbcType=VARCHAR  },
+            CURRENT_DEP_NAME     = #{currentTask.handler.parent.name,         jdbcType=VARCHAR  },
+            CURRENT_ORG_ID       = #{currentTask.handler.parent.parent.id,    jdbcType=VARCHAR  },
+            CURRENT_ORG_NAME     = #{currentTask.handler.parent.parent.name,  jdbcType=VARCHAR  },
+
+            UPDATE_TIME          = now()
+          where ID = #{id}
+    </update>
+
+    <!--根据流程ID获取流程-->
+    <select id="getById" parameterType="string" resultMap="flowMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!--&lt;!&ndash;根据当前活动ID获取流程&ndash;&gt;-->
+    <!--<select id="getByActivityId" parameterType="string" resultMap="flowMap">-->
+        <!--select-->
+          <!--<include refid="sqlPart"/>-->
+        <!--from ssim_flow f-->
+        <!--where f.current_activity_id = #{activityId,  jdbcType=NUMERIC}-->
+    <!--</select>-->
+
+    <!--&lt;!&ndash;根据当前任务ID获取流程&ndash;&gt;-->
+    <!--<select id="getByTaskId" parameterType="string" resultMap="flowMap">-->
+        <!--select-->
+          <!--<include refid="sqlPart"/>-->
+        <!--from ssim_flow f-->
+        <!--where f.current_task_id = #{taskId,  jdbcType=NUMERIC}-->
+    <!--</select>-->
+</mapper>

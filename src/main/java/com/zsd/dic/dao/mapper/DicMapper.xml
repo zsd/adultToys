@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsd.dic.dao.mapper.DicMapper">
+
+    <resultMap id="dicMap" type="com.zsd.dic.domain.Dic">
+        <result column="id"          property="id"/> <!--主键-->
+        <result column="item"        property="item"/> <!--项目,如性别,年级等-->
+        <result column="name"        property="name"/> <!--字典值,如男,女等-->
+        <result column="order_num"   property="orderNum"/> <!--排序号-->
+        <result column="description" property="description"/> <!--对字典值的其它描述-->
+
+        <association property="parent"  resultMap="parentMap" /> <!-- 归属父字典 -->
+
+
+
+    </resultMap>
+
+    <resultMap id="parentMap" type="com.zsd.dic.domain.Dic">
+        <result column="parent_id"   property="id"/> <!--父字典值-->
+        <result column="parent_item"   property="item"/> <!--父字典值-->
+    </resultMap>
+
+    <sql id="table-name">plat_dic</sql>
+
+    <sql id="sqlPart">
+        id, item, name, order_num, description, parent_id
+    </sql>
+
+    <!-- 根据ID获取字典-->
+    <select id="getById" resultMap="dicMap">
+        select
+        <include refid="sqlPart"/>
+        from
+        <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!--插入字典-->
+    <insert id="save" parameterType="com.zsd.dic.domain.Dic">
+        insert into <include refid="table-name"/> (
+        <include refid="sqlPart"/>
+        )
+        values
+        (
+        #{id,             jdbcType=VARCHAR  },
+        #{item,           jdbcType=VARCHAR  },
+        #{name,           jdbcType=VARCHAR  },
+        #{orderNum,      jdbcType=VARCHAR  },
+        #{description,    jdbcType=VARCHAR  },
+        #{parent.id,      jdbcType=VARCHAR  }
+        )
+    </insert>
+
+    <!-- 更新字典 -->
+    <update id="update" parameterType="com.zsd.dic.domain.Dic">
+        update <include refid="table-name"/>
+        set item = #{item},
+        name = #{name},
+        order_num = #{orderNum},
+        description = #{description}
+        where id = #{id}
+    </update>
+
+    <!-- 删除字典 -->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/>
+        where id = #{id}
+    </delete>
+
+    <!-- 通过父节点ID查找所有子节点 -->
+    <select id="getByParentId" resultMap="dicMap">
+        select
+        <include refid="sqlPart"/>
+        from
+        <include refid="table-name"/>
+        where
+          parent_id = #{parentId} order by order_num
+    </select>
+
+    <!-- 通过父节点ID查找所有子节点 -->
+    <select id="getByItem" resultMap="dicMap">
+        select
+        <include refid="sqlPart"/>
+        from
+        <include refid="table-name"/>
+        <where>
+            <if test="item != null and item !='' ">
+                and  item LIKE '%${item}%'
+            </if>
+            and parent_id = 'root'
+        </where>
+         order by order_num
+    </select>
+
+</mapper>

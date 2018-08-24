@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsd.log.dao.mapper.LogMapper">
+
+    <resultMap id="logMap" type="com.zsd.log.domain.Log">
+        <result column="id"              property="id"/> <!--主键-->
+        <result column="type"            property="type"/> <!--业务日志类型 1：添加 2：删除 3：修改 4：查询（可以自定义更多操作类型-->
+        <result column="description"     property="description"/> <!--日志操作描述-->
+        <result column="ip"              property="ip"/> <!--操作人IP-->
+        <result column="client_type"     property="client.type"/> <!--客户端类型-->
+
+        <result column="client_version"  property="client.version"/> <!--客户端版本-->
+        <result column="module_id"       property="module.id"/> <!--模块ID-->
+        <result column="module_name"     property="module.name"/> <!--模块名称-->
+        <result column="obj_id"          property="obj.id"/> <!--关联对象ID-->
+        <result column="obj_name"        property="obj.name"/> <!--关联对象名称-->
+
+        <result column="obj_type_id"     property="obj.type.id"/> <!--关联对象类型ID-->
+        <result column="obj_type_name"   property="obj.type.name"/> <!--关联对象类型名称-->
+        <result column="user_id"         property="user.id"/> <!--用户ID-->
+        <result column="user_name"       property="user.name"/> <!--用户名称-->
+        <result column="create_time"     property="createTime"/> <!--创建时间-->
+    </resultMap>
+
+    <sql id="table-name">plat_log</sql>
+
+    <sql id="sqlPart">
+        id,              type,            description,      ip,         client_type,
+        client_version,  module_id,       module_name,      obj_id,     obj_name,
+        obj_type_id,     obj_type_name,   user_id,          user_name,  create_time
+    </sql>
+
+    <sql id="if-part">
+        <where>
+            <if test="type != null and type !='' ">
+                and type = #{type}
+            </if>
+            <if test="description != null and description !='' ">
+                and  description LIKE '%${description}%'
+            </if>
+        </where>
+    </sql>
+
+    <!-- 根据日志ID获取日志信息-->
+    <select id="getById" resultMap="logMap">
+        select
+        <include refid="sqlPart"/>
+        from
+        <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!--插入日志-->
+    <insert id="save">
+        insert into<include refid="table-name"/>(
+        <include refid="sqlPart"/>
+        )
+        values
+        (
+            #{id,                       jdbcType=VARCHAR  },
+            #{type,                     jdbcType=VARCHAR  },
+            #{description,              jdbcType=VARCHAR  },
+            #{ip,                       jdbcType=VARCHAR  },
+            #{client.type,              jdbcType=NUMERIC  },
+
+            #{client.version,           jdbcType=VARCHAR  },
+            #{module.id,                jdbcType=VARCHAR  },
+            #{module.name,              jdbcType=VARCHAR  },
+            #{obj.id,                   jdbcType=VARCHAR  },
+            #{obj.name,                 jdbcType=VARCHAR  },
+
+            #{obj.objType.id,           jdbcType=VARCHAR  },
+            #{obj.objType.name,         jdbcType=VARCHAR  },
+            #{user.id,                  jdbcType=VARCHAR  },
+            #{user.name,                jdbcType=VARCHAR  },
+            now()
+        )
+    </insert>
+
+    <!-- 查询日志, 查询记录数 -->
+    <select id="count" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <include refid="if-part"/>
+    </select>
+
+    <!-- 查询日志, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" resultMap="logMap">
+        select <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        <include refid="if-part"/>
+        ORDER BY create_time DESC
+        LIMIT #{skip,     jdbcType=NUMERIC  }, #{limit,     jdbcType=NUMERIC  }
+    </select>
+
+
+</mapper>

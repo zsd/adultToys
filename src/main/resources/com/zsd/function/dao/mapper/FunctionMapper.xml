@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsd.function.dao.mapper.FunctionMapper">
+
+    <resultMap id="functionMap" type="com.zsd.function.domain.Function">
+        <result column="id"           property="id"/>
+        <result column="name"         property="name"/>
+        <result column="code"         property="code" /> <!-- 编号 -->
+        <result column="src"          property="src"/>
+        <result column="type"         property="type"/>
+
+        <result column="description"  property="description"/>
+        <result column="is_show"      property="isShow"/>
+        <result column="order_num"    property="orderNum"/>
+        <result column="parent_id"    property="parentId"/>
+        <result column="icon"         property="icon"/>
+
+        <result column="create_time"  property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time"  property="updateTime" /> <!-- 更新时间 -->
+    </resultMap>
+
+    <resultMap id="treeNodeMap" type="com.zsd.function.domain.TreeNode">
+        <result column="id"           property="id"/>
+        <result column="name"         property="name"/>
+        <result column="order_num"    property="orderNum"/>
+        <result column="parent_id"    property="pId"/>
+        <result column="create_time"  property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time"  property="updateTime" /> <!-- 更新时间 -->
+    </resultMap>
+
+    <sql id="table-name">plat_function f</sql>
+
+    <sql id="sqlPart">
+        f.id,           f.name,     f.code,       f.src,        f.type,
+        f.description,  f.is_show,  f.order_num,  f.parent_id,  f.icon,
+        f.create_time,  f.update_time
+    </sql>
+
+    <sql id="sqlPartNode">
+        f.id, f.name, f.order_num, f.parent_id, f.create_time, f.update_time
+    </sql>
+
+    <!-- 获取所有节点 -->
+    <select id="getAllNode" resultMap="treeNodeMap">
+        select
+        <include refid="sqlPartNode"/>
+        from
+        <include refid="table-name"/>
+        ORDER BY order_num
+    </select>
+
+    <!-- 根据父节点获取子节点-->
+    <select id="getByParentId" resultMap="functionMap">
+        select
+        <include refid="sqlPart"/>
+        from
+        <include refid="table-name"/>
+        where
+        f.parent_id = #{parentId} order by order_num
+    </select>
+
+    <!--插入字典-->
+    <insert id="save" parameterType="com.zsd.function.domain.Function">
+        insert into plat_function (
+        id,           name,     code,       src,        type,
+        description,  is_show,  order_num,  parent_id,  icon,
+        create_time,  update_time
+        )
+        values
+        (
+        #{id,             jdbcType=VARCHAR  },
+        #{name,           jdbcType=VARCHAR  },
+        #{code,           jdbcType=VARCHAR  },
+        #{src,            jdbcType=VARCHAR  },
+        #{type,           jdbcType=VARCHAR  },
+
+        #{description,    jdbcType=VARCHAR  },
+        #{isShow,         jdbcType=VARCHAR  },
+        #{orderNum,       jdbcType=NUMERIC  },
+        #{parentId,       jdbcType=VARCHAR  },
+        #{icon,           jdbcType=VARCHAR  },
+
+        now(),
+        now()
+        )
+    </insert>
+
+    <!-- 更新字典 -->
+    <update id="update" parameterType="com.zsd.function.domain.Function">
+        update <include refid="table-name"/>
+        set name = #{name},
+        code = #{code},
+        src = #{src},
+        type = #{type},
+        description = #{description},
+        is_show = #{isShow},
+        order_num = #{orderNum},
+        parent_id = #{parentId},
+        icon = #{icon},
+        update_time =  now()
+        where id = #{id}
+    </update>
+
+    <!-- 删除字典 -->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/>
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteByParent" >
+        delete from plat_function
+        <where>
+            id in
+            <foreach collection="list" item="itme" open="(" separator="," close=")">
+                #{itme}
+            </foreach>
+        </where>
+    </delete>
+
+    <!-- 根据父节点获取子节点 -->
+    <select id="getByUserId" resultMap="functionMap">
+        select DISTINCT
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        left join plat_role_function rf on f.id=rf.function_id
+        left join plat_role r on rf.role_id=r.id
+        left join plat_user_role ur on r.id=ur.role_id
+        left join plat_user p on ur.user_id=p.id
+        where f.parent_id = #{parentId}
+        and p.id=#{userId} and f.type='1' order by f.order_num;
+    </select>
+
+    <!-- 查询, 查询记录数 -->
+    <select id="checkedCode" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="id != null">
+                and id != #{id}
+            </if>
+            <if test="code != null">
+                and code = #{code}
+            </if>
+        </where>
+    </select>
+
+    <!--根据用户获取按钮权限-->
+    <select id="getButtonByUserId" resultMap="functionMap">
+        select DISTINCT f.id, f.name ,f.code, f.src, f.type, f.description,f.is_show,f.order_num,f.parent_id,f.icon,f.create_time,f.update_time from plat_function f
+        left join plat_role_function rf on f.id=rf.function_id
+        left join plat_role r on rf.role_id=r.id
+        left join plat_user_role ur on r.id=ur.role_id
+        left join plat_user p on ur.user_id=p.id
+        where p.id=#{userId} and f.type='2'  order by f.order_num;
+    </select>
+</mapper>

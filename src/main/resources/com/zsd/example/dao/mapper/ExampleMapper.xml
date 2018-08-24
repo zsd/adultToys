@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.example.dao.mapper.ExampleMapper">
+
+	<sql id="table-name">plat_example</sql>
+
+	<!-- 插入例子 -->
+	<insert id="insert" parameterType="com.zsd.example.domain.Example">
+		insert into <include refid="table-name"/>
+        (id, name, gender)
+		values (#{id}, #{name}, #{gender})
+	</insert>
+
+	<!-- 更新例子 -->
+	<update id="update" parameterType="com.zsd.example.domain.Example">
+		update <include refid="table-name"/>
+		set name = #{name}, gender = #{gender}
+		where id = #{id}
+	</update>
+
+	<!-- 获取例子: 输出直接映射到对象 -->
+	<select id="get" parameterType="int" resultType="com.zsd.example.domain.Example">
+		select id, name, gender
+		from <include refid="table-name"/>
+		where id = #{id}
+	</select>
+
+	<!-- 删除语句 -->
+	<delete id="delete" parameterType="string">
+	     delete from <include refid="table-name"/> where id = #{id}
+	</delete>
+
+	<!-- 查询例子, 查询记录数 -->
+	<select id="count" resultType="long">
+		select count(id)
+		from <include refid="table-name"/>
+		<where>
+			<if test="name != null">
+				and name LIKE '%${name}%'
+			</if>
+			<if test="gender != null">
+				and gender LIKE '%${gender}%'
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询例子, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+	<select id="search" resultType="com.zsd.example.domain.Example">
+		select id, name, gender
+		from <include refid="table-name"/>
+		<where>
+			<if test="name != null">
+				and name LIKE '%${name}%'
+			</if>
+			<if test="gender != null">
+				and gender LIKE '%${gender}%'
+			</if>
+		</where>
+	</select>
+
+</mapper>

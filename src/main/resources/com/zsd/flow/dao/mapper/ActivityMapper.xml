@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.flow.dao.mapper.ActivityMapper">
+    <resultMap id="activityMap" type="com.zsd.flow.domain.Activity">
+        <result column="ID"              property="id" />
+        <result column="FLOW_ID"         property="flow.id" />
+        <result column="TASK_ID"         property="task.id" />
+        <result column="ACTIVITY_TYPE"   property="type.name" />
+        <result column="CREATE_TIME"     property="createTime" />
+        <result column="UPDATE_TIME"     property="updateTime" />
+
+        <!-- handler -->
+        <association property="handler"  resultMap="handlerResultMap" />
+    </resultMap>
+
+    <!-- 岗位 -->
+    <resultMap id="handlerResultMap" type="com.zsd.org.domain.Post">
+        <result column="POST_ID"       property="id"/>
+        <result column="POST_NAME"     property="name"/>
+        <association property="user"   resultMap="handlerUserResultMap" />
+        <association property="parent" resultMap="handlerDepartmentResultMap" />
+    </resultMap>
+
+    <!-- 用户 -->
+    <resultMap id="handlerUserResultMap" type="com.zsd.org.domain.User">
+        <result column="USER_ID"    property="id"/>
+        <result column="USER_NAME"  property="name"/>
+    </resultMap>
+
+    <!-- 部门 -->
+    <resultMap id="handlerDepartmentResultMap" type="com.zsd.org.domain.Department">
+        <result column="DEP_ID"         property="id"/>
+        <result column="DEP_NAME"       property="name"/>
+        <association property="parent"  resultMap="handlerUnitResultMap" />
+    </resultMap>
+
+    <!-- 单位 -->
+    <resultMap id="handlerUnitResultMap" type="com.zsd.org.domain.Org">
+        <result column="ORG_ID"    property="id"/>
+        <result column="ORG_NAME"  property="name"/>
+    </resultMap>
+
+    <sql id="table-name">plat_activity</sql>
+
+    <!--sql片段-->
+    <sql id="sqlPart">
+        ID,        FLOW_ID,        TASK_ID,      USER_ID,   USER_NAME,
+        POST_ID,   POST_NAME,      DEP_ID,       DEP_NAME,  ORG_ID,
+        ORG_NAME,  ACTIVITY_TYPE,  CREATE_TIME,  UPDATE_TIME
+    </sql>
+
+    <!--插入活动-->
+    <insert id="insert" parameterType="com.zsd.flow.domain.Activity">
+        insert into <include refid="table-name"/>
+            (<include refid="sqlPart"/>)
+        values
+            (
+              #{id,                         jdbcType=VARCHAR  },
+              #{flow.id                     jdbcType=VARCHAR  },
+              #{task.id                     jdbcType=VARCHAR  },
+              #{handler.user.id,            jdbcType=VARCHAR  },
+		 	  #{handler.user.name,          jdbcType=VARCHAR  },
+
+		 	  #{handler.id,                 jdbcType=VARCHAR  },
+		 	  #{handler.name,               jdbcType=VARCHAR  },
+		 	  #{handler.parent.id,          jdbcType=VARCHAR  },
+		 	  #{handler.parent.name,        jdbcType=VARCHAR  },
+		 	  #{handler.parent.parent.id,   jdbcType=VARCHAR  },
+
+		 	  #{handler.parent.parent.name, jdbcType=VARCHAR  },
+		 	  #{type.name,                  jdbcType=VARCHAR  },
+		 	  now(),
+              now()
+            )
+    </insert>
+
+    <!--获取活动-->
+    <select id="getById" parameterType="string" resultMap="activityMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!--获取活动列表-->
+    <select id="getByFlowId" parameterType="string" resultMap="activityMap">
+        select
+          <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where flow_id = #{flowId}
+        order by create_time desc
+    </select>
+
+    <!--根据流程ID获取起始活动-->
+    <!--<select id="getStartActivityByFlowId" parameterType="string" resultMap="activityMap">-->
+        <!--select <include refid="sqlPart"/>-->
+        <!--from ssim_activity a where exists (-->
+        <!--select 1 from ssim_flow f-->
+        <!--where a.id = f.start_activity_id-->
+        <!--and f.id = #{flowId} )-->
+    <!--</select>-->
+
+    <!--<select id="getStartActivityById" parameterType="string" resultMap="activityMap">-->
+        <!--select <include refid="sqlPart"/>-->
+        <!--from ssim_activity a where exists (-->
+        <!--select 1 from ssim_flow f where exists (-->
+        <!--select 1 from ssim_activity a1-->
+        <!--where f.id = a1.flow_id-->
+        <!--and a.id = f.start_activity_id-->
+        <!--and a1.id = #{id,  jdbcType=NUMERIC} ))-->
+    <!--</select>-->
+</mapper>

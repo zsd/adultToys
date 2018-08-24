@@ -1,0 +1,129 @@
+.fr-core-tab-header {
+    position: absolute;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-left: solid 1px #1268bb;
+    border-right: solid 1px #1268bb;
+    background : url('images/lightblue.png') 0px -367px repeat-x;
+}
+
+.fr-core-tab-body{
+    position: absolute;
+    background: #FFFFFF;
+    border-top: 0px;
+    border-right: solid 1px #228ee9;
+    border-left: solid 1px #228ee9;
+    border-bottom: solid 1px #228ee9;
+}
+
+.fr-core-tab-home {
+    cursor: pointer;
+    text-align: center;
+    font-family: "microsoft yahei",simsun,arial;
+    font-size: 13px;
+    font-weight: bold;
+    color: #1368BB;
+    
+    background: url('images/lightblue.png') no-repeat -176px 0;
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src="/WebReport/ReportServer?op=resource&resource=/com/fr/fs/web/images/iesixfix/png/tab_home_normal.png");
+    _background: none;
+}
+
+.fr-core-tab-home-hover {
+    background: url('images/lightblue.png') no-repeat -176px -32px;
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src="images/tab_home_hover.png");
+    _background: none;
+}
+
+.fr-core-tab-control-more {
+    cursor: pointer;
+    background: url('images/lightblue.png') no-repeat -240px 0;
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src="images/tab_more_normal_lightblue.png");
+    _background: none;
+}
+
+.fr-core-tab-control-more.fr-core-tab-control-more-hover {
+    cursor: pointer;
+    background: url('images/lightblue.png') no-repeat -240px -32px;
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src="images/tab_more_hover_lightblue.png");
+    _background: none;
+}
+
+.fr-core-tab-control {
+     //background: url('images/lightblue.png') no-repeat 0 -256px;
+   background: url('images/lightblue.png') no-repeat -288px -256px;
+}
+
+.fr-core-tab-control-hover {
+    background: url('images/lightblue.png') no-repeat -144px -256px;
+}
+
+.fr-core-tab-control-select {
+    //background: url('images/lightblue.png') no-repeat -288px -256px;
+      background: url('images/lightblue.png') no-repeat 0 -256px;
+}
+
+.fr-core-tab-control-text {
+    margin-left: 7px;
+    display:inline;
+    float: left;
+    font-family: "microsoft yahei",simsun,arial;
+    font-size: 13px;
+    color: #2987BD;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fr-core-tab-control-select div.fr-core-tab-control-text {
+    color: #2987BD;
+}
+
+.fr-core-tab-control-icon {
+    background: url('images/lightblue.png') no-repeat -80px 0;
+    _background: url('images/fs_tab_and_tree.gif') no-repeat -64px -128px;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+
+.fr-core-tab-control-select div.fr-core-tab-control-icon {
+   // background: url('images/lightblue.png') no-repeat -80px -32px;
+    _background: url('images/fs_tab_and_tree.gif') no-repeat -64px -160px;
+}
+
+.fr-core-tab-popup {
+    border: 1px solid #CAE9F0;
+    border-radius: 3px;
+    background: #F3F3F3;
+    position: absolute;
+}
+
+.fr-core-tab-control-menu-item {
+    text-align: center;
+    font-family: simsun;
+    font-size: 12px;
+    color: #4B4744;
+}
+
+.fr-core-tab-control-menu-item-hover {
+    background: #D4EEF4;
+}
+
+.fr-core-tab-control-menu-item-mouse-down {
+    background: #B2E795;
+}
+
+.fr-core-tab-control-menu-item-sep {
+    background: #CEE7F2;
+    font-size: 1px;
+}
+
+.fr-core-tab-popup-scroll {
+    background: #D4EEF4;
+}
+.fr-core-tab-popup-scroll-bar {
+    background: #B2E795;
+}

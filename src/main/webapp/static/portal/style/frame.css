@@ -1,0 +1,186 @@
+/* 自定义 begain ----------------------------------------------------------------------*/
+body { font-size:14px; font-family:Arial, sans-serif, Verdana, Tahoma,"微软雅黑", "宋体"; padding: 0; margin:5px;}
+
+.layout-split-proxy-h {
+	position: absolute;
+	width: 2px;
+	background: #888;
+	font-size: 1px;
+	cursor: e-resize;
+	display: none;
+	z-index: 5;
+}
+
+.layout-split-north {
+	border-bottom: 5px solid #efefef;
+}
+
+.layout-split-south {
+	border-top: 5px solid #efefef;
+}
+
+.layout-split-east {
+	border-left: 5px solid #efefef;
+}
+
+.layout-split-west {
+	border-right: 5px solid #efefef;
+}
+
+a:link {
+	text-decoration: none;
+}
+
+a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+a:active {
+	text-decoration: none;
+}
+a:focus { outline: none; }
+
+.cs-north {
+	height: 72px;
+}
+
+.cs-north-bg {
+	width: 100%;
+	height: 100%;
+	background: url(../../core/plugins/easyui/themes/gray/images/header_bg.png)
+		repeat-x;
+}
+
+.cs-north-logo {
+	height: 40px;
+	margin: 15px 0px 0px 5px;
+	display: inline-block;
+	color: #000000;
+	font-size: 22px;
+	font-weight: bold;
+	text-decoration: none
+}
+
+.cs-west {
+	width: 200px;
+	padding: 0px;
+}
+
+.cs-navi-tab {
+	padding: 5px;
+}
+
+.cs-tab-menu {
+	width: 120px;
+}
+
+.cs-home-remark {
+	padding: 10px;
+}
+
+.wrapper {
+	float: right;
+	height: 30px;
+	margin-left: 10px;
+}
+
+.ui-skin-nav {
+	float: right;
+	padding: 0;
+	margin-right: 10px;
+	list-style: none outside none;
+	height: 30px;
+}
+
+.ui-skin-nav .li-skinitem {
+	float: left;
+	font-size: 12px;
+	line-height: 30px;
+	margin-left: 10px;
+	text-align: center;
+}
+
+.ui-skin-nav .li-skinitem span {
+	cursor: pointer;
+	width: 10px;
+	height: 10px;
+	display: inline-block;
+}
+
+.ui-skin-nav .li-skinitem span.cs-skin-on {
+	border: 1px solid #FFFFFF;
+}
+
+.ui-skin-nav .li-skinitem span.gray {
+	background-color: gray;
+}
+
+.ui-skin-nav .li-skinitem span.default {
+	background-color: blue;
+}
+
+.ui-skin-nav .li-skinitem span.bootstrap {
+	background-color: #D7EBF9;
+}
+
+.ui-skin-nav .li-skinitem span.black {
+	background-color: black;
+}
+
+.ui-skin-nav .li-skinitem span.metro {
+	background-color: #FFE57E;
+}
+
+.ui-skin-nav .li-skinitem span.pepper-grinder {
+	background-color: #BC3604;
+}
+
+.ui-skin-nav .li-skinitem span.blue {
+	background-color: blue;
+}
+
+.ui-skin-nav .li-skinitem span.cupertino {
+	background-color: #D7EBF9;
+}
+
+.ui-skin-nav .li-skinitem span.dark-hive {
+	background-color: black;
+}
+
+.ui-skin-nav .li-skinitem span.sunny {
+	background-color: #FFE57E;
+}
+
+.cs-north-bg{height:70px; background:#f3f3f3; line-height:20px;overflow: hidden; border: none;}
+	.cs-north-bg .tophead {height:30px; background:url(../images/tophead-pic-bg.jpg) top right no-repeat #1d7ad9;color: #FFF; padding-left:12px;font-size: 18px;line-height: 30px;}
+		.cs-north-bg .tophead .logo { float:left; width:220px; height:70px; background:#e87477; text-align:center;}
+		.cs-north-bg .tophead .topmenu { float: right; margin:0 auto; height:70px; background:#CCC;}
+	.cs-north-bg .nav {padding-left:150px; height:40px; background: url(../images/tophead-logo.jpg) left top no-repeat #1369c0; line-height:40px}
+		  .cs-north-bg .nav ul{margin:0; padding:0; width:800px;}
+		  .cs-north-bg .nav ul li { margin:0; float:left; width:100px; height:40px;display:block;cursor:pointer;line-height:40px; color:#FFF; font-size:14px; font-weight:bold;text-align:center;}
+		  .cs-north-bg .nav ul li a {color:#FFF;}
+		  .cs-north-bg .nav ul li a:hover {margin:0; float:left; width:98px; height:39px; line-height:39px; display:block;cursor:pointer; color:#fff; text-decoration:none; background:#4593fd; font-size:14px; font-weight:bold; border-left:solid 1px #24517f; border-right:solid 1px #24517f; border-top:solid 1px #24517f;}
+#south{height:30px; line-height:30px; border:none; background:#f3f3f3; color:#999; border-top:solid 1px #ccc; text-align:center;}
+
+
+#navigation{width:150px; float:left;}
+#navigation ul{margin:0; padding:0;width:150px;}
+#navigation ul li{width:150px;height:30px;display:block;cursor:pointer;line-height:30px;text-align:center;}
+#navigation ul li a {color:#000; }
+#navigation ul li a:hover {margin:0; float:left; width:150px; height:30px; line-height:30px; display:block;cursor:pointer; color:#fff; text-decoration:none; background:#414da7; font-size:12px; }
+
+#navigation div li{border:1px dashed #ffffff;height: 22px;margin-top: 3px;line-height: 22px}
+#navigation div li a{margin-left: 10px;}
+#navigation div li.hover{border:1px dashed #99BBE8; background:#E0ECFF;cursor:pointer;height: 22px;margin-top: 3px;line-height: 22px}
+#navigation div li.hover a{margin-left: 10px;color:#416AA3;}
+#navigation div li.selected{border:1px solid #99BBE8; background:#E0ECFF;cursor:default;}
+#navigation div li.selected a{color:#416AA3; font-weight:bold;}
+
+a.cs-navi-tab:link { text-decoration: none;}
+a.cs-navi-tab:visited { text-decoration: none;}
+a.cs-navi-tab:hover { text-decoration:none;}
+a.cs-navi-tab:active { text-decoration: none;}

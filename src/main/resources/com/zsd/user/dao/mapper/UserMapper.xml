@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zsd.user.dao.mapper.UserMapper">
+
+    <resultMap id="userMap" type="com.zsd.user.domain.User">
+        <result column="id"            property="id" /> <!-- 用户ID -->
+        <result column="login_name"    property="loginName" /> <!-- 登录名称 -->
+        <result column="password"      property="password" /> <!-- 密码 -->
+        <result column="name"          property="name" /> <!-- 用户名称 -->
+        <result column="phone"         property="phone" /> <!-- 电话号码 -->
+
+        <result column="email"         property="email" /> <!-- 邮箱 -->
+        <result column="photo"         property="photo" /> <!-- 头像图片地址 -->
+        <result column="birth_day"     property="birthDay" /> <!-- 出生日期 -->
+        <result column="wechat_id"     property="wechatId" /> <!-- 微信Id -->
+        <result column="wechat_name"   property="wechatName" /> <!-- 微信用户名 -->
+
+        <result column="weibo_id"      property="weiboId" /> <!-- 微博Id -->
+        <result column="weibo_name"    property="weiboName" /> <!-- 微博用户名 -->
+        <result column="reward_money"  property="rewardMoney" /> <!-- 奖励金额 -->
+        <result column="reward_point"  property="rewardPoint" /> <!-- 奖励积分 -->
+        <result column="is_freeze"     property="isFreeze" /> <!-- 是否冻结 -->
+
+        <result column="freeze_time"   property="freezeTime" /> <!-- 冻结时间 -->
+        <result column="create_time"   property="createTime" /> <!-- 创建时间 -->
+        <result column="update_time"   property="updateTime" /> <!-- 更新时间 -->
+    </resultMap>
+
+    <sql id="table-name">plat_user</sql>
+
+    <!-- sql片段 -->
+    <sql id="sqlPart">
+        id,           login_name,    password,      name,          phone,
+        email,        photo,         birth_day,     wechat_id,     wechat_name,
+        weibo_id,     weibo_name,    reward_money,  reward_point,  is_freeze,
+        freeze_time,  create_time,   update_time
+    </sql>
+
+    <!-- 根据用户ID获取用户 -->
+    <select id="getById" parameterType="String" resultMap="userMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+
+    <!-- 根据用户ID获取用户 -->
+    <select id="getByLoginName" parameterType="String" resultMap="userMap">
+        select
+        <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        where login_name = #{loginName}
+    </select>
+
+    <!--保存用户-->
+    <insert id="save" parameterType="com.zsd.user.domain.User">
+        insert into <include refid="table-name"/>
+        (<include refid="sqlPart"/>)
+        values (
+        #{id},
+        #{loginName},
+        #{password},
+        #{name},
+        #{phone},
+
+        #{email},
+        #{photo},
+        #{birthDay},
+        #{wechatId},
+        #{wechatName},
+
+        #{weiboId},
+        #{weiboName},
+        #{rewardMoney},
+        #{rewardPoint},
+        0,
+        null,
+
+        now(),
+        now()
+        )
+    </insert>
+
+    <!--更新用户-->
+    <update id="update" parameterType="com.zsd.user.domain.User">
+        update <include refid="table-name"/>
+        set
+        name = #{name},
+        login_name = #{loginName},
+        password = #{password},
+        phone = #{phone},
+        email = #{email},
+        update_time = now()
+        where id = #{id}
+    </update>
+
+    <!--冻结用户-->
+    <update id="freeze" parameterType="string">
+        update <include refid="table-name"/>
+        set
+        is_freeze = 1,
+        freeze_time = now(),
+        update_time = now()
+        where id = #{id}
+    </update>
+
+    <!--删除用户-->
+    <delete id="delete" parameterType="string">
+        delete from <include refid="table-name"/> where id = #{id}
+    </delete>
+
+    <!-- 查询, 查询记录数 -->
+    <select id="count" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+        </where>
+    </select>
+
+    <!-- 查询, 1.输入用map传入多个参数 2.<where>语句, 添加where和and关键字 3.输出直接映射对象 -->
+    <select id="search" resultMap="userMap">
+        select <include refid="sqlPart"/>
+        from <include refid="table-name"/>
+        <where>
+            <if test="name != null">
+                and name LIKE '%${name}%'
+            </if>
+        </where>
+        ORDER BY update_time DESC
+        LIMIT #{skip,     jdbcType=NUMERIC  }, #{limit,     jdbcType=NUMERIC  }
+    </select>
+
+    <!-- 验证用户名 -->
+    <select id="checkLoginName" resultType="long">
+        select count(id)
+        from <include refid="table-name"/>
+        <where>
+            <if test="id != null">
+                and id != #{id}
+            </if>
+            <if test="loginName != null">
+                and login_name = #{loginName}
+            </if>
+        </where>
+    </select>
+
+</mapper>
